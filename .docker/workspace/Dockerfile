@@ -1,9 +1,5 @@
 FROM ubuntu:18.04
 
-FROM composer:2.0
-
-FROM php:8.0
-
 LABEL maintainer="DucLs <ducls.coder@gmail.com>"
 
 RUN apt-get update && apt-get install -y \
@@ -18,10 +14,12 @@ RUN apt-get update && apt-get install -y \
   pkg-config \
   iputils-ping
 
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
+RUN mkdir -p /var/www/html
 
-RUN apt-get install -y nodejs
+RUN groupadd -g 1000 laravel
 
-COPY --from=composer:2.0 /usr/bin/composer /usr/bin/composer
+RUN useradd -u 1000 -g laravel -s /bin/sh laravel
 
-WORKDIR /var/www/html
+RUN chown -R laravel:laravel /var/www/html
+
+USER laravel
